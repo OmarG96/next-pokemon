@@ -130,7 +130,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
         name,
       },
     })),
-    fallback: false,
+    fallback: "blocking",
   };
 };
 
@@ -138,6 +138,15 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { name } = params as { name: string };
 
   const pokemonInfo = await getPokemonInfo(name);
+
+  if (!pokemonInfo) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
 
   return {
     props: pokemonInfo,
